@@ -11,11 +11,12 @@
 #include "esp_netif.h"
 #include "esp_eth.h"
 
-
+#include "protocol_examples_common.h"
 
 esp_err_t index_handler(httpd_req_t*);
 esp_err_t get_handler(httpd_req_t*);
 esp_err_t post_handler(httpd_req_t*);
+esp_err_t ws_handler(httpd_req_t*);
 
 httpd_handle_t start_webserver(void);
 
