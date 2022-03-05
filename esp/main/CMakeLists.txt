@@ -1,2 +1,2 @@
-idf_component_register(SRCS "web.c" "main.c"
+idf_component_register(SRCS "motor.c" "web.c" "main.c" "motor.c"
                     INCLUDE_DIRS ".")

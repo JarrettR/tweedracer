@@ -13,6 +13,8 @@
 
 #include "protocol_examples_common.h"
 
+#include "motor.h"
+
 esp_err_t index_handler(httpd_req_t*);
 esp_err_t get_handler(httpd_req_t*);
 esp_err_t post_handler(httpd_req_t*);

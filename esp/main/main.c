@@ -10,10 +10,6 @@
 #include "web.h"
 
 
-const char* ssid = "NSA"; //Enter SSID
-const char* password = "Orange"; //Enter Password
- 
-
 void app_main(void)
 {
     printf("Hello, Tester!\n");
