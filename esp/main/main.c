@@ -8,6 +8,7 @@
 #include "nvs.h"
 #include "nvs_flash.h"
 #include "web.h"
+#include "motor.h"
 
 
 void app_main(void)
@@ -30,6 +31,8 @@ void app_main(void)
     // esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &connect_handler, &server);
     // esp_event_handler_register(WIFI_EVENT, WIFI_EVENT_STA_DISCONNECTED, &disconnect_handler, &server);
     start_webserver();
+
+    motor_init();
     while(1) {
         vTaskDelay(1000 / portTICK_PERIOD_MS);
     }

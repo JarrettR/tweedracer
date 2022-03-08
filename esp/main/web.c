@@ -80,7 +80,10 @@ static esp_err_t echo_handler(httpd_req_t *req)
             return ret;
         }
         ESP_LOGI(TAG, "Got packet with message: %s", ws_pkt.payload);
-        handle_motors((char *)ws_pkt.payload, ws_pkt.len);
+
+        // Send to motors!
+        parse_motor_msg((char *)ws_pkt.payload, ws_pkt.len);
+
     }
     ESP_LOGI(TAG, "Packet type: %d", ws_pkt.type);
     if (ws_pkt.type == HTTPD_WS_TYPE_TEXT &&
