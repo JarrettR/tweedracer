@@ -45,6 +45,12 @@ void motor_init(void)
         .hpoint         = 0
     };
     ESP_ERROR_CHECK(ledc_channel_config(&ledc_channel_r));
+
+
+    gpio_reset_pin(DIR_OUTPUT_LEFT);
+    gpio_set_direction(DIR_OUTPUT_LEFT, GPIO_MODE_OUTPUT);
+    gpio_reset_pin(DIR_OUTPUT_RIGHT);
+    gpio_set_direction(DIR_OUTPUT_RIGHT, GPIO_MODE_OUTPUT);
 }
 
 void parse_motor_msg(char* message, int size) {
@@ -89,20 +95,23 @@ void move_motor(float x, float y) {
 
     int direction;
 
-    if (y > 0) {
-        direction = 0:
+    if (y < 0) {
+        direction = 0;
     } else {
         direction = 1;
     }
 
-    
-    if (x > 0) {
+    gpio_set_level(DIR_OUTPUT_LEFT, direction);
+    gpio_set_level(DIR_OUTPUT_RIGHT, direction);
+
+    if (x < 0) {
         rPercent = motor_max;
         lPercent = (1 - weight) * motor_max;
     } else {
         lPercent = motor_max;
         rPercent = (1 - weight) * motor_max;
     }
+
     ESP_LOGI(TAG, "M: %f    W: %f", motor_max, weight);
     ESP_LOGI(TAG, "L: %f    R: %f", lPercent, rPercent);
 
