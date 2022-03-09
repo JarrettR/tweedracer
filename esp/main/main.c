@@ -28,7 +28,7 @@ void start_mdns_service()
 
 void app_main(void)
 {
-    // printf("Hello, Racer!\n");
+    printf("Hello, Racer!\n");
     esp_err_t err = nvs_flash_init();
     if (err == ESP_ERR_NVS_NO_FREE_PAGES || err == ESP_ERR_NVS_NEW_VERSION_FOUND) {
         ESP_ERROR_CHECK(nvs_flash_erase());
@@ -48,8 +48,6 @@ void app_main(void)
     // esp_event_handler_register(WIFI_EVENT, WIFI_EVENT_STA_DISCONNECTED, &disconnect_handler, &server);
     start_webserver();
     
-    vTaskDelay(1000 / portTICK_PERIOD_MS);
-
     motor_init();
     while(1) {
         vTaskDelay(1000 / portTICK_PERIOD_MS);
