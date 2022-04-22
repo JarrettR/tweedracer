@@ -7,8 +7,13 @@ Designed to be built incredibly quickly, and readily hacked upon.
 
 ![sideview](docs/side.jpeg)
 
+https://user-images.githubusercontent.com/6027644/164622684-72c06576-6b1f-4820-a275-ad31c8ef8cd2.mp4
+
+
 
 ###Firmware
+
+
 
 
 
