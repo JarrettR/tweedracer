@@ -1,4 +1,4 @@
-##Tweedracer
+## Tweedracer
 
 A barebones starter platform for remote control cars.
 
@@ -11,7 +11,7 @@ https://user-images.githubusercontent.com/6027644/164622684-72c06576-6b1f-4820-a
 
 
 
-###Firmware
+### Firmware
 
 
 
@@ -20,7 +20,7 @@ https://user-images.githubusercontent.com/6027644/164622684-72c06576-6b1f-4820-a
 This projects uses the ESP-IDF framework, version 4.4.
 
 
-####Installation and Usage
+#### Installation and Usage
 
 - [Follow the official Espressif directions](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/get-started/index.html#installation-step-by-step)
 - Download this git repo
