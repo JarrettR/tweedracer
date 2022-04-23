@@ -11,6 +11,30 @@ https://user-images.githubusercontent.com/6027644/164622684-72c06576-6b1f-4820-a
 
 
 
+### What's in the kit?
+
+
+![kit](docs/kit.jpg)
+
+#### Included
+
+- 2x DC geared motors
+- 2x Wheels
+- 2x O-rings (for tires)
+- 1x Caster
+- 1x ESP32 dev board
+- 1x Switch
+- 1x Battery holder
+- 1x Motor driver
+
+#### Not included, but still required
+
+- Solder
+- Wire
+- Hot glue
+- Cardboard
+- Imagination
+
 ### Hardware
 
 Wire up all of the components like this:
@@ -36,16 +60,16 @@ This projects uses the ESP-IDF framework, version 4.4.
 - Go to the menuconfig and add in your wifi credentials
 - Change the mDNS name in main.c
 - Build and flash to your board
-- Navigate to http://[yourMDNSname.local] on your phone
+- Navigate to http://[yourMDNSname.local] on your phone (or a laptop, or a smart TV, or some other smart appliance)
 - Drag the ball on the screen around to drive
-- Do either of the motors seem backwards or flipped? Change the pin assignments in motor.h (LEDC_OUTPUT_LEFT/RIGHT and DIR_OUTPUT_LEFT/RIGHT)
+- Do either of the motors seem backwards or flipped? Change the pin assignments in motor.h (LEDC_OUTPUT_LEFT/RIGHT and DIR_OUTPUT_LEFT/RIGHT) and rebuild/reflash
 
 
 ### Future Improvements (An exercise for the builder)
 
 
 
-![piracy](docs/downloadacar.jpg)
+![piracy](docs/piracy.png)
 
 There are [thousands](https://www.thingiverse.com/search?q=vw+beetle) of better form factors.
 
