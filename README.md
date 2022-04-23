@@ -11,6 +11,15 @@ https://user-images.githubusercontent.com/6027644/164622684-72c06576-6b1f-4820-a
 
 
 
+### Hardware
+
+Wire up all of the components like this:
+
+![wiring](docs/wiring.png)
+
+Basic soldering skills are required, but this is not a challenging build.
+
+
 ### Firmware
 
 
@@ -29,3 +38,4 @@ This projects uses the ESP-IDF framework, version 4.4.
 - Build and flash to your board
 - Navigate to http://[yourMDNSname.local] on your phone
 - Drag the ball on the screen around to drive
+- Do either of the motors seem backwards or flipped? Change the pin assignments in motor.h (LEDC_OUTPUT_LEFT/RIGHT and DIR_OUTPUT_LEFT/RIGHT)
