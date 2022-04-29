@@ -55,14 +55,16 @@ You own this, so go wild with customisation. Arts and crafts, 3D printing, swapp
 
 This projects uses the ESP-IDF framework, version 4.4.
 
-- [Follow the official Espressif directions](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/get-started/index.html#installation-step-by-step)
-- Download this git repo
-- Go to the menuconfig and add in your wifi credentials
-- Change the mDNS name in main.c
-- Build and flash to your board
+- [Follow the official Espressif directions](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/get-started/index.html#installation-step-by-step). The [VSCode extension strategy](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/vscode-setup.html) is nice on Linux/Mac OS, so perhaps try that first, but I have had issues with it working properly for me on Windows.
+- Download this git repo, and then open up the `tweedracer\esp` folder in VSCode.
+- Hit the gear icon on the bottom of VSCode for the menuconfig
+- Go to the `Example Connection Configuration` and add in your wifi credentials
+- Hit the save button and close menuconfig window
+- In the file browser, navigate to `main.c` and change the mDNS names around lines 24 and 26
+- Build and flash to your board using the fire icon on the bottom
 - Navigate to http://[yourMDNSname.local] on your phone (or a laptop, or a smart TV, or some other smart appliance)
 - Drag the ball on the screen around to drive
-- Do either of the motors seem backwards or flipped? Change the pin assignments in motor.h (LEDC_OUTPUT_LEFT/RIGHT and DIR_OUTPUT_LEFT/RIGHT) and rebuild/reflash
+- Do either of the motors seem backwards or flipped? Swap the pin assignments in `motor.h` (LEDC_OUTPUT_LEFT/RIGHT and DIR_OUTPUT_LEFT/RIGHT) and rebuild/reflash
 
 
 ### Future Improvements (An exercise for the builder)
