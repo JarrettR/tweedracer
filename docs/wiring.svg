@@ -41,13 +41,13 @@
      inkscape:pagecheckerboard="0"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="0.32026164"
-     inkscape:cx="1044.4585"
-     inkscape:cy="1056.9483"
+     inkscape:zoom="1.3665685"
+     inkscape:cx="203.79513"
+     inkscape:cy="666.26739"
      inkscape:window-width="1920"
-     inkscape:window-height="1057"
-     inkscape:window-x="1912"
-     inkscape:window-y="-8"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="32"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1" />
   <defs
@@ -62,7 +62,10 @@
        width="288.32544"
        height="346.9819"
        x="-25.610571"
-       y="-16.522949" />
+       y="-16.522949"
+       inkscape:export-filename="C:\Users\jrain\Documents\What\tweedracer\docs\wiring.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
     <g
        id="g430"
        transform="matrix(1.198008,0,0,1.198008,-45.447192,-41.51996)">
@@ -143,13 +146,13 @@
          sodipodi:nodetypes="cccc"
          inkscape:connector-curvature="0"
          id="path4530"
-         d="m 112.26366,218.39663 v -12.6719 h 17.88145 l -0.2816,-9.57432"
+         d="m 112.26366,218.39663 v -12.34868 h 3.09403 l -0.2816,-9.89754"
          style="fill:none;stroke:#000000;stroke-width:1.92818;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <path
          sodipodi:nodetypes="ccccc"
          inkscape:connector-curvature="0"
          id="path4532"
-         d="m 100.79364,130.62974 v 8.20394 H 46.832209 v 67.26242 h 65.112131"
+         d="m 100.79364,130.62974 v 4.89091 H 46.832209 v 70.57545 h 65.112131"
          style="fill:none;stroke:#000000;stroke-width:1.92818;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <path
          inkscape:connector-curvature="0"
@@ -165,7 +168,7 @@
          sodipodi:nodetypes="cccc"
          inkscape:connector-curvature="0"
          id="path4538"
-         d="M 150.84255,207.97752 V 139.0528 h -47.06211 v -8.8213"
+         d="M 150.84255,207.97752 V 139.0528 l -53.28414,0.0808 v -8.8213"
          style="fill:none;stroke:#ff0000;stroke-width:1.92818;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <path
          sodipodi:nodetypes="cccc"
