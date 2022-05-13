@@ -14,6 +14,16 @@
      border-radius: 7px;
      touch-action: none;
 }
+#centerpoint {
+     width: 8px;
+     height: 8px;
+     position: absolute;
+     z-index: 1;
+     border: 2px solid rgba(136, 136, 136, .25);
+     border-radius: 50%;
+     touch-action: none;
+     pointer-events: none;
+}
  #item {
      width: 100px;
      height: 100px;
@@ -34,16 +44,25 @@
      position: fixed;
      right: 0;
      top: 0;
+     text-align: center;
+     background-color: white;
+     border-width: 2px;
+     border-style: solid;
+     border-color: rgb(136, 136, 136);
+     color:rgba(0, 0, 0, 1.0);
+     z-index: 1;
+     opacity: 1;
 }
 
 
 
 </style>
 </head>
-<body>
+<body onresize="onPageResize()">
 <input type='textarea' id='area' disabled />
 <div id='outerContainer'>
   <div id='container'>
+      <div id='centerpoint'> </div>
     <div id='item'> </div>
   </div>
 </div>
@@ -59,28 +78,60 @@ ws.onmessage = message => {
 	  view.src = urlObject;
 	}
 };
+ws.onclose = closeEvent => {
+    console.log(`WebSocket closed: ${closeEvent.code} (${closeEvent.reason})`);
+}
+ws.onerror = error => {
+    console.error(`WebSocket error: ${error}`);
+};
 
 var dragItem = document.querySelector('#item');
 var container = document.querySelector('#container');
-var containerWidth = container.offsetWidth;
-var containerHeight = container.offsetHeight;
-var maxDragHorizontal = containerWidth / 2;
-var maxDragVertical = containerHeight / 2;
-document.getElementById('area').value = 'width: ' + maxDragHorizontal + ' height: ' + maxDragVertical;
+var textArea = document.getElementById('area')
+var containerWidth;
+var containerHeight;
+var maxDragHorizontal;
+var maxDragVertical;
 var active = false;
 var currentX;
 var currentY;
 var initialX;
 var initialY;
-var xOffset = 0;
-var yOffset = 0;
+var xOffset;
+var yOffset;
 var lastText, lastSend, sendTimeout;
+
+onPageResize();
+
 container.addEventListener('touchstart', dragStart, false);
 container.addEventListener('touchend', dragEnd, false);
 container.addEventListener('touchmove', drag, false);
 container.addEventListener('mousedown', dragStart, false);
 container.addEventListener('mouseup', dragEnd, false);
 container.addEventListener('mousemove', drag, false);
+
+function onPageResize() {
+    containerWidth = container.offsetWidth;
+    containerHeight = container.offsetHeight;
+    console.log(`Container is ${containerWidth}x${containerHeight}`);
+    maxDragHorizontal = Math.floor(containerWidth / 2);
+    maxDragVertical = Math.floor(containerHeight / 2);
+
+    textArea.value = 'width: ' + maxDragHorizontal + ' height: ' + maxDragVertical;
+
+    stop();
+}
+
+function stop() {
+    currentX = initialX = xOffset = 0;
+    currentY = initialY = yOffset = 0;
+
+    textArea.style.borderColor = 'rgb(136, 136, 136)';
+    textArea.value = 'X: ' + currentX + ' Y: ' + currentY;
+
+    dragItem.style.transform = 'translate3d(' + currentX + 'px, ' + currentY + 'px, 0)';
+    send('0.0,0.0');
+}
 
 function dragStart(e) {
     if (e.type === 'touchstart') {
@@ -99,6 +150,8 @@ function dragEnd(e) {
     initialX = currentX;
     initialY = currentY;
     active = false;
+
+    stop();
 }
 
 function drag(e) {
@@ -114,15 +167,27 @@ function drag(e) {
         xOffset = currentX;
         yOffset = currentY;
         if (Math.abs(currentY) < maxDragVertical && Math.abs(currentX) < maxDragHorizontal) {
-            setTranslate(currentX, currentY, dragItem);
+            dragItem.style.transform = 'translate3d(' + currentX + 'px, ' + currentY + 'px, 0)';
+            var x = Math.min(Math.max(currentX / maxDragHorizontal, -1.0), 1.0);
+            var y = Math.min(Math.max(currentY / maxDragVertical, -1.0), 1.0);
+            send(x + ',' + y);
+
+            textArea.style.borderColor = 'rgb(136, 136, 136)';
+            textArea.value = 'X: ' + x.toFixed(3) + ' Y: ' + y.toFixed(3);
+        } else {
+            textArea.style.borderColor = 'rgb(220, 23, 23)';
+            textArea.value = 'X: ---- Y: ----';
         }
-        document.getElementById('area').value = 'X: ' + currentX + ' Y: ' + currentY;
     }
 }
 
 // limit sending to one message every 30 ms
 // https://github.com/neonious/lowjs_esp32_examples/blob/master/neonious_one/cellphone_controlled_rc_car/www/index.html
 function send(txt) {
+    if (ws.readyState != WebSocket.OPEN) {
+        return;
+    }
+
     var now = new Date().getTime();
     if(lastSend === undefined || now - lastSend >= 30) {
         try {
@@ -143,13 +208,6 @@ function send(txt) {
             send(lastText);
         }, ms);
     }
-}
-
-function setTranslate(xPos, yPos, el) {
-    el.style.transform = 'translate3d(' + xPos + 'px, ' + yPos + 'px, 0)';
-    var panDegrees = xPos * 90 / maxDragHorizontal;
-    var tiltDegrees = yPos * 90 / maxDragVertical;
-	send(panDegrees + ',' + tiltDegrees);
 }
 </script>
 </body>

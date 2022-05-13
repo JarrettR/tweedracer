@@ -1,56 +1,33 @@
+#include <esp_system.h>
+#include <esp_log.h>
+#include "driver/gpio.h"
+#include "esp_err.h"
+#include "driver/mcpwm.h"
+#include "soc/mcpwm_periph.h"
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+
 #include "motor.h"
 
 static const char *TAG = "MOTOR";
 
-static int ledc_duty(float percent) {
-    //#define LEDC_DUTY               (4095) // Set duty to 50%. ((2 ** 13) - 1) * 50% = 4095
-
-    const float total = 8191;
-
-    return (int) (total * percent) ;
-}
-
 void motor_init(void)
 {
-    // Prepare and then apply the LEDC PWM timer configuration
-    ledc_timer_config_t ledc_timer = {
-        .speed_mode       = LEDC_MODE,
-        .timer_num        = LEDC_TIMER,
-        .duty_resolution  = LEDC_DUTY_RES,
-        .freq_hz          = LEDC_FREQUENCY,  // Set output frequency at 5 kHz
-        .clk_cfg          = LEDC_AUTO_CLK
-    };
-    ESP_ERROR_CHECK(ledc_timer_config(&ledc_timer));
+    mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM0A, MOTOR_L_A);
+    mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM0B, MOTOR_L_B);
 
-    // Prepare and then apply the LEDC PWM channel configuration
-    ledc_channel_config_t ledc_channel_l = {
-        .speed_mode     = LEDC_MODE,
-        .channel        = LEDC_CHANNEL_L,
-        .timer_sel      = LEDC_TIMER,
-        .intr_type      = LEDC_INTR_DISABLE,
-        .gpio_num       = LEDC_OUTPUT_LEFT,
-        .duty           = 0, // Set duty to 0%
-        .hpoint         = 0
-    };
-    ESP_ERROR_CHECK(ledc_channel_config(&ledc_channel_l));
+    mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM1A, MOTOR_R_A);
+    mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM1B, MOTOR_R_B);
 
-    // Prepare and then apply the LEDC PWM channel configuration
-    ledc_channel_config_t ledc_channel_r = {
-        .speed_mode     = LEDC_MODE,
-        .channel        = LEDC_CHANNEL_R,
-        .timer_sel      = LEDC_TIMER,
-        .intr_type      = LEDC_INTR_DISABLE,
-        .gpio_num       = LEDC_OUTPUT_RIGHT,
-        .duty           = 0, // Set duty to 0%
-        .hpoint         = 0
-    };
-    ESP_ERROR_CHECK(ledc_channel_config(&ledc_channel_r));
-
-
-    gpio_reset_pin(DIR_OUTPUT_LEFT);
-    gpio_set_direction(DIR_OUTPUT_LEFT, GPIO_MODE_OUTPUT);
-    gpio_reset_pin(DIR_OUTPUT_RIGHT);
-    gpio_set_direction(DIR_OUTPUT_RIGHT, GPIO_MODE_OUTPUT);
+    mcpwm_config_t pwm_config;
+    pwm_config.frequency = 200;
+    pwm_config.cmpr_a = 0;    //duty cycle of PWMxA = 0
+    pwm_config.cmpr_b = 0;    //duty cycle of PWMxb = 0
+    pwm_config.counter_mode = MCPWM_UP_COUNTER;
+    pwm_config.duty_mode = MCPWM_DUTY_MODE_0;
+    mcpwm_init(MCPWM_UNIT_0, MCPWM_TIMER_0, &pwm_config);
+    mcpwm_init(MCPWM_UNIT_0, MCPWM_TIMER_1, &pwm_config);
 }
 
 void parse_motor_msg(char* message, int size) {
@@ -89,40 +66,37 @@ void move_motor(float x, float y) {
     //  -   +
     //    +
 
-    float motor_max = fabs(y / Y_MAX);
-    float weight = fabs(x / X_MAX);
+    float motor_max = fabs(y);
+    float weight = fabs(x);
     float lPercent, rPercent;
 
-    int direction;
-
-    if (y < 0) {
-        direction = 0;
+    if (x < 0.0f) {
+        rPercent = 100.0f * motor_max;
+        lPercent = 100.0f * (1.0f - weight) * motor_max;
     } else {
-        direction = 1;
-    }
-
-    gpio_set_level(DIR_OUTPUT_LEFT, direction);
-    gpio_set_level(DIR_OUTPUT_RIGHT, direction);
-
-    if (x < 0) {
-        rPercent = motor_max;
-        lPercent = (1 - weight) * motor_max;
-    } else {
-        lPercent = motor_max;
-        rPercent = (1 - weight) * motor_max;
+        lPercent = 100.0f * motor_max;
+        rPercent = 100.0f * (1.0f - weight) * motor_max;
     }
 
     ESP_LOGI(TAG, "M: %f    W: %f", motor_max, weight);
     ESP_LOGI(TAG, "L: %f    R: %f", lPercent, rPercent);
 
-    int lDuty = ledc_duty(lPercent);
-    int rDuty = ledc_duty(rPercent);
+    if (y < 0.0f) {
+        mcpwm_set_signal_low(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B);
+        mcpwm_set_duty(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, lPercent);
+        mcpwm_set_duty_type(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, MCPWM_DUTY_MODE_0);
 
-    ESP_LOGI(TAG, "L: %d    R: %d", lDuty, rDuty);
-    
-    ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL_L, lDuty));
-    ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL_L));
-    ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL_R, rDuty));
-    ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL_R));
+        mcpwm_set_signal_low(MCPWM_UNIT_0, MCPWM_TIMER_1, MCPWM_OPR_B);
+        mcpwm_set_duty(MCPWM_UNIT_0, MCPWM_TIMER_1, MCPWM_OPR_A, rPercent);
+        mcpwm_set_duty_type(MCPWM_UNIT_0, MCPWM_TIMER_1, MCPWM_OPR_A, MCPWM_DUTY_MODE_0);
+    } else {
+        mcpwm_set_signal_low(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A);
+        mcpwm_set_duty(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, lPercent);
+        mcpwm_set_duty_type(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, MCPWM_DUTY_MODE_0);
+
+        mcpwm_set_signal_low(MCPWM_UNIT_0, MCPWM_TIMER_1, MCPWM_OPR_A);
+        mcpwm_set_duty(MCPWM_UNIT_0, MCPWM_TIMER_1, MCPWM_OPR_B, rPercent);
+        mcpwm_set_duty_type(MCPWM_UNIT_0, MCPWM_TIMER_1, MCPWM_OPR_B, MCPWM_DUTY_MODE_0);
+    }
 
 }
